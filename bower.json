@@ -1,0 +1,25 @@
+{
+    "name": "guru-js-lib",
+    "description": "Simple set of polyfills and helper methods/classes we use in our web development projects.",
+    "license": "BSD-3-Clause",
+    "homepage": "https://github.com/guru-digital/guru-js-lib",
+    "authors": [
+        {
+            "name": "Corey Sewell",
+            "email": "corey@gurudigital.nz"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/guru-digital/guru-js-lib.git"
+    },
+    "ignore": [
+        ".jshintrc",
+        "src/*",
+        "**/*.txt"
+    ],
+    "dependencies": {
+    },
+    "devDependencies": {
+    }
+}
