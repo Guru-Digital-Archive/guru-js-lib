@@ -732,274 +732,275 @@ if (typeof responsiveHelper === "undefined") {
      * @type responsiveHelper
      */
     var responsiveHelper = (
+        /**
+         *
+         * @param {jQuery} $ Current jQuery Instance
+         * @param {window} window
+         * @returns {responsiveHelper}
+         */
+        function ($, window) {
+            "use strict";
+            var
+                    /**
+                     * Ensures we only bind resize envents once
+                     * @type Boolean
+                     */
+                    isSetup = false,
+                    /**
+                     * Timer ID for resize envent
+                     * @type {Number}
+                     */
+                    resizeTimer = null,
+                    /**
+                     * Delay in milliseconds to fire events after the screen has resized<br/>
+                     * To high and there will be a noticible delay.<br/>
+                     * To low and resizing browser may become slow
+                     * @type Number
+                     */
+                    resizeTimeout = 90;
+
             /**
-             *
-             * @param {jQuery} $ Current jQuery Instance
-             * @param {window} window
-             * @returns {responsiveHelper}
+             * Returns the current height and width of the viewport
+             * @namespace responsiveHelper
+             * @returns {responsiveHelper.viewport.result} The current height and width of the viewport
              */
-                    function ($, window) {
-                        "use strict";
-                        var
-                                /**
-                                 * Ensures we only bind resize envents once
-                                 * @type Boolean
-                                 */
-                                isSetup = false,
-                                /**
-                                 * Timer ID for resize envent
-                                 * @type {Number}
-                                 */
-                                resizeTimer = null,
-                                /**
-                                 * Delay in milliseconds to fire events after the screen has resized<br/>
-                                 * To high and there will be a noticible delay.<br/>
-                                 * To low and resizing browser may become slow
-                                 * @type Number
-                                 */
-                                resizeTimeout = 90;
+            function viewport() {
+                var element = window, property = "inner";
+                if (!("innerWidth" in element)) {
+                    property = "client";
+                    element = document.documentElement || document.body;
+                }
 
-                        /**
-                         * Returns the current height and width of the viewport
-                         * @namespace responsiveHelper
-                         * @returns {responsiveHelper.viewport.result} The current height and width of the viewport
-                         */
-                        function viewport() {
-                            var element = window, property = "inner";
-                            if (!("innerWidth" in element)) {
-                                property = "client";
-                                element = document.documentElement || document.body;
-                            }
+                /**
+                 * The current height and width of the viewport
+                 * @name result
+                 * @namespace responsiveHelper.viewport
+                 */
+                var result = {
+                    /**
+                     * The current width of the viewport in pixels
+                     * @type {Number}
+                     */
+                    width: parseInt(element[ property + "Width" ]),
+                    /**
+                     * The current height of the viewport in pixels
+                     * @type {Number}
+                     */
+                    height: parseInt(element[ property + "Height" ])
+                };
+                return result;
+            }
 
-                            /**
-                             * The current height and width of the viewport
-                             * @name result
-                             * @namespace responsiveHelper.viewport
-                             */
-                            var result = {
-                                /**
-                                 * The current width of the viewport in pixels
-                                 * @type {Number}
-                                 */
-                                width: parseInt(element[ property + "Width" ]),
-                                /**
-                                 * The current height of the viewport in pixels
-                                 * @type {Number}
-                                 */
-                                height: parseInt(element[ property + "Height" ])
-                            };
-                            return result;
-                        }
+            /**
+             * Get the current responsiveHelper.sizes.&#42; represnting the current screen size<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called first to enable live updating.
+             * @returns {responsiveHelper.sizes.xs|responsiveHelper.sizes.md|responsiveHelper.sizes.lg|responsiveHelper.sizes.sm}
+             */
+            function currentSize() {
+                if (API.width <= API.sizes.xs) {
+                    return API.sizes.xs;
+                } else if (API.width <= API.sizes.sm) {
+                    return API.sizes.sm;
+                } else if (API.width <= API.sizes.md) {
+                    return API.sizes.md;
+                } else {
+                    return API.sizes.lg;
+                }
+            }
+            /**
+             * Is the screen currently Large<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is larger than responsiveHelper.sizes.md
+             */
+            function isLG() {
+                return API.width >= API.sizes.lg;
+            }
 
-                        /**
-                         * Get the current responsiveHelper.sizes.&#42; represnting the current screen size<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called first to enable live updating.
-                         * @returns {responsiveHelper.sizes.xs|responsiveHelper.sizes.md|responsiveHelper.sizes.lg|responsiveHelper.sizes.sm}
-                         */
-                        function currentSize() {
-                            if (API.width <= API.sizes.xs) {
-                                return API.sizes.xs;
-                            } else if (API.width <= API.sizes.sm) {
-                                return API.sizes.sm;
-                            } else if (API.width <= API.sizes.md) {
-                                return API.sizes.md;
-                            } else {
-                                return API.sizes.lg;
-                            }
-                        }
-                        /**
-                         * Is the screen currently Large<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {Boolean} True if responsiveHelper.width is larger than responsiveHelper.sizes.md
-                         */
-                        function isLG() {
-                            return API.width >= API.sizes.lg;
-                        }
-
-                        /**
-                         * Is the screen currently Medium<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.md and larger than responsiveHelper.sizes.sm
-                         */
-                        function isMD() {
-                            return API.width >= API.sizes.md && API.width <= (API.sizes.lg - 1);
-                        }
-                        /**
-                         * Is the screen currently Small<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.sm and larger than responsiveHelper.sizes.xs
-                         */
-                        function isSM() {
-                            return API.width >= API.sizes.sm && API.width <= (API.sizes.md - 1);
-                        }
-                        /**
-                         * Is the screen currently Extra Small<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.xs
-                         */
-                        function isXS() {
-                            return API.width >= API.sizes.xs && API.width <= (API.sizes.sm - 1);
-                        }
-                        /**
-                         * Is the screen currently below Extra Small<br/><br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.xs
-                         */
-                        function isXXS() {
-                            return API.width <= API.sizes.xs - 1;
-                        }
-                        /**
-                         * Enables live updating on screen resize
-                         * @returns {undefined}
-                         */
-                        function init() {
-                            if (!isSetup) {
-                                $(window).resize(
-                                        function () {
-                                            if (resizeTimer) {
-                                                clearTimeout(resizeTimer);
-                                            }
-                                            resizeTimer = setTimeout(API.reflow, resizeTimeout);
-                                        }
-                                );
-                                isSetup = true;
-                            }
-                        }
-                        /**
-                         * Recalculates the current screen width and hieght then fires the follow events:
-                         * <ul>
-                         * <li>responsive.width if the width has changed</li>
-                         * <li>responsive.height if the height has changed</li>
-                         * <li>responsive.change if the width or height has changed</li>
-                         * </ul>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating and automatic event firing on screen resize.
-                         * @returns {undefined}
-                         */
-                        function reflow() {
-                            var size = API.viewport(), widthChanged = (size.width !== API.width), heightChanged = (size.height !== API.height);
-                            if (widthChanged) {
-                                API.width = size.width;
-                                $(API).trigger("responsive.width", API);
-                            }
-                            if (heightChanged) {
-                                API.height = size.height;
-                                $(API).trigger("responsive.height", API);
-                            }
-                            if (widthChanged || heightChanged) {
-                                $(API).trigger("responsive.change", API);
-                            }
-                        }
-                        /**
-                         * Adds a debugging div to body.<br/>
-                         * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                         * @returns {jQuery}
-                         */
-                        function showDebugBox() {
-                            var debugBox = $(".responsive-helper-debug"), updateDebugBox = function (e, responsiveHelper) {
-                                var text = "Unknown (currentSize=" + responsiveHelper.currentSize() + ", width=" + responsiveHelper.width + ")";
-                                if (responsiveHelper.isLG()) {
-                                    text = "isLG";
-                                } else if (responsiveHelper.isMD()) {
-                                    text = "isMD";
-                                } else if (responsiveHelper.isSM()) {
-                                    text = "isSM";
-                                } else if (responsiveHelper.isXS()) {
-                                    text = "isXS";
-                                } else if (responsiveHelper.isXXS()) {
-                                    text = "isXXS";
+            /**
+             * Is the screen currently Medium<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.md and larger than responsiveHelper.sizes.sm
+             */
+            function isMD() {
+                return API.width >= API.sizes.md && API.width <= (API.sizes.lg - 1);
+            }
+            /**
+             * Is the screen currently Small<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.sm and larger than responsiveHelper.sizes.xs
+             */
+            function isSM() {
+                return API.width >= API.sizes.sm && API.width <= (API.sizes.md - 1);
+            }
+            /**
+             * Is the screen currently Extra Small<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.xs
+             */
+            function isXS() {
+                return API.width >= API.sizes.xs && API.width <= (API.sizes.sm - 1);
+            }
+            /**
+             * Is the screen currently below Extra Small<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.xs
+             */
+            function isXXS() {
+                return API.width <= API.sizes.xs - 1;
+            }
+            /**
+             * Enables live updating on screen resize
+             * @returns {undefined}
+             */
+            function init() {
+                if (!isSetup) {
+                    $(window).resize(
+                            function () {
+                                if (resizeTimer) {
+                                    clearTimeout(resizeTimer);
                                 }
-                                debugBox.html(text);
-                            };
-                            if (!debugBox.length) {
-                                debugBox = $("<div class='responsive-helper-debug'></div>");
-                                debugBox.css({
-                                    position: "fixed",
-                                    "z-index": 99999,
-                                    top: 0,
-                                    left: 0,
-                                    background: "#fff",
-                                    display: "inline-block",
-                                    padding: "5px",
-                                    "-webkit-box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)",
-                                    "box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)"
-                                });
+                                resizeTimer = setTimeout(API.reflow, resizeTimeout);
                             }
-                            $(API).on("responsive.width", updateDebugBox);
-                            $(function () {
-                                debugBox.appendTo("body");
-                                updateDebugBox({}, API);
-                            });
-                            return debugBox;
-                        }
-                        /**
-                         * Represents different screen size break points in pixels
-                         * @name sizes
-                         * @namespace responsiveHelper
-                         */
-                        var sizes = {
-                            /**
-                             * Width in pixels at which the screen is considered Extra Small<br/>
-                             * (Default 480)
-                             * @type {Number}
-                             */
-                            xs: 480,
-                            /**
-                             * Width in pixels at which the screen is considered Small<br/>
-                             * (Default 768)
-                             * @type {Number}
-                             */
-                            sm: 768,
-                            /**
-                             * Width in pixels at which the screen is considered Medium<br/>
-                             * (Default 992)
-                             * @type {Number}
-                             */
-                            md: 992,
-                            /**
-                             * Width in pixels at which the screen is considered Large<br/>
-                             * (Default 1200)
-                             * @type {Number}
-                             */
-                            lg: 1200
-                        };
-                        /**
-                         * @name responsiveHelper
-                         * @namespace responsiveHelper
-                         */
-                        var API = {
-                            /**
-                             * Represents different screen size break points in pixels
-                             * @type responsiveHelper.sizes
-                             */
-                            sizes: sizes,
-                            /**
-                             * Current screen width in pixels<br/>
-                             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                             * @type {Number}
-                             */
-                            width: 0,
-                            /**
-                             * Current screen height in pixels<br/>
-                             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
-                             * @type {Number}
-                             */
-                            height: 0,
-                            currentSize: currentSize,
-                            viewport: viewport,
-                            init: init,
-                            showDebugBox: showDebugBox,
-                            reflow: reflow,
-                            isLG: isLG,
-                            isXS: isXS,
-                            isSM: isSM,
-                            isMD: isMD,
-                            isXXS: isXXS
-                        };
+                    );
+                    isSetup = true;
+                }
+            }
+            /**
+             * Recalculates the current screen width and hieght then fires the follow events:
+             * <ul>
+             * <li>responsive.width if the width has changed</li>
+             * <li>responsive.height if the height has changed</li>
+             * <li>responsive.change if the width or height has changed</li>
+             * </ul>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating and automatic event firing on screen resize.
+             * @returns {undefined}
+             */
+            function reflow() {
+                var size = API.viewport(), widthChanged = (size.width !== API.width), heightChanged = (size.height !== API.height);
+                if (widthChanged) {
+                    API.width = size.width;
+                    $(API).trigger("responsive.width", API);
+                }
+                if (heightChanged) {
+                    API.height = size.height;
+                    $(API).trigger("responsive.height", API);
+                }
+                if (widthChanged || heightChanged) {
+                    $(API).trigger("responsive.change", API);
+                }
+            }
+            /**
+             * Adds a debugging div to body.<br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {jQuery}
+             */
+            function showDebugBox() {
+                var debugBox = $(".responsive-helper-debug"), updateDebugBox = function (e, responsiveHelper) {
+                    var text = "Unknown (currentSize=" + responsiveHelper.currentSize() + ", width=" + responsiveHelper.width + ")";
+                    if (responsiveHelper.isLG()) {
+                        text = "isLG";
+                    } else if (responsiveHelper.isMD()) {
+                        text = "isMD";
+                    } else if (responsiveHelper.isSM()) {
+                        text = "isSM";
+                    } else if (responsiveHelper.isXS()) {
+                        text = "isXS";
+                    } else if (responsiveHelper.isXXS()) {
+                        text = "isXXS";
+                    }
+                    debugBox.html(text);
+                };
+                if (!debugBox.length) {
+                    debugBox = $("<div class='responsive-helper-debug'></div>");
+                    debugBox.css({
+                        position: "fixed",
+                        "z-index": 99999,
+                        top: 0,
+                        left: 0,
+                        background: "#fff",
+                        display: "inline-block",
+                        padding: "5px",
+                        "-webkit-box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)",
+                        "box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)"
+                    });
+                }
+                $(API).on("responsive.width", updateDebugBox);
+                $(function () {
+                    debugBox.appendTo("body");
+                    updateDebugBox({}, API);
+                });
+                return debugBox;
+            }
+            /**
+             * Represents different screen size break points in pixels
+             * @name sizes
+             * @namespace responsiveHelper
+             */
+            var sizes = {
+                /**
+                 * Width in pixels at which the screen is considered Extra Small<br/>
+                 * (Default 480)
+                 * @type {Number}
+                 */
+                xs: 480,
+                /**
+                 * Width in pixels at which the screen is considered Small<br/>
+                 * (Default 768)
+                 * @type {Number}
+                 */
+                sm: 768,
+                /**
+                 * Width in pixels at which the screen is considered Medium<br/>
+                 * (Default 992)
+                 * @type {Number}
+                 */
+                md: 992,
+                /**
+                 * Width in pixels at which the screen is considered Large<br/>
+                 * (Default 1200)
+                 * @type {Number}
+                 */
+                lg: 1200
+            };
+            /**
+             * @name responsiveHelper
+             * @namespace responsiveHelper
+             */
+            var API = {
+                /**
+                 * Represents different screen size break points in pixels
+                 * @type responsiveHelper.sizes
+                 */
+                sizes: sizes,
+                /**
+                 * Current screen width in pixels<br/>
+                 * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+                 * @type {Number}
+                 */
+                width: 0,
+                /**
+                 * Current screen height in pixels<br/>
+                 * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+                 * @type {Number}
+                 */
+                height: 0,
+                currentSize: currentSize,
+                viewport: viewport,
+                init: init,
+                showDebugBox: showDebugBox,
+                reflow: reflow,
+                isLG: isLG,
+                isXS: isXS,
+                isSM: isSM,
+                isMD: isMD,
+                isXXS: isXXS
+            };
 
-                        API.reflow();
-                        return API;
-                    }(jQuery, window));
-        }
+            API.reflow();
+            return API;
+        }(jQuery, window)
+    );
+}
 
 
 if (typeof debugHelper === "undefined") {
@@ -1009,75 +1010,77 @@ if (typeof debugHelper === "undefined") {
      * @type debugHelper
      */
     var debugHelper = (
+        /**
+         *
+         * @returns {debugHelper}
+         */
+        function () {
+            "use strict";
+            var mode = {
+                /**
+                 * Is the site in Dev mode<br/>
+                 * (Default false)
+                 * @type {boolean}
+                 */
+                dev: false,
+                /**
+                 * Is the site in Test mode<br/>
+                 * (Default false)
+                 * @type {boolean}
+                 */
+                test: false,
+                /**
+                 * Is the site in Live mode<br/>
+                 * (Default false)
+                 * @type {boolean}
+                 */
+                live: true
+            };
             /**
-             *
-             * @returns {debugHelper}
+             * @name debugHelper
+             * @namespace debugHelper
              */
-                    function () {
-                        "use strict";
-                        var mode = {
-                            /**
-                             * Is the site in Dev mode<br/>
-                             * (Default false)
-                             * @type {boolean}
-                             */
-                            dev: false,
-                            /**
-                             * Is the site in Test mode<br/>
-                             * (Default false)
-                             * @type {boolean}
-                             */
-                            test: false,
-                            /**
-                             * Is the site in Live mode<br/>
-                             * (Default false)
-                             * @type {boolean}
-                             */
-                            live: true
-                        };
-                        /**
-                         * @name debugHelper
-                         * @namespace debugHelper
-                         */
-                        var API = {
-                            /**
-                             * List of modes, with the value of the current mode is true
-                             * @type debugHelper.mode
-                             */
-                            mode: mode,
-                            isDev: function () {
-                                return API.mode.dev;
-                            },
-                            isTest: function () {
-                                return API.mode.test;
-                            },
-                            isLive: function () {
-                                return API.mode.live;
-                            },
-                            setMode: function (mode) {
-                                API.mode.dev = /.*dev.*/i.test(mode);
-                                API.mode.test = /.*test.*/i.test(mode);
-                                API.mode.live = /.*live.*/i.test(mode);
-                                if (!API.mode.live) {
-                                    if (console && console.log) {
-                                        this.log = console.log.bind(window.console);
-                                        ["error", "warn", "debug"].forEach(function (prop) {
-                                            if (typeof console[prop] === "function") {
-                                                API[prop] = console[prop].bind(window.console);
-                                            } else {
-                                                API[prop] = console.log.bind(window.console);
-                                            }
-                                        });
-                                    }
-
+            var API = {
+                /**
+                 * List of modes, with the value of the current mode is true
+                 * @type debugHelper.mode
+                 */
+                mode: mode,
+                isDev: function () {
+                    return API.mode.dev;
+                },
+                isTest: function () {
+                    return API.mode.test;
+                },
+                isLive: function () {
+                    return API.mode.live;
+                },
+                setMode: function (mode) {
+                    API.mode.dev = /.*dev.*/i.test(mode);
+                    API.mode.test = /.*test.*/i.test(mode);
+                    API.mode.live = /.*live.*/i.test(mode);
+                    if (!API.mode.live) {
+                        if (console && console.log) {
+                            this.log = console.log.bind(window.console);
+                            ["error", "warn", "debug"].forEach(function (prop) {
+                                if (typeof console[prop] === "function") {
+                                    API[prop] = console[prop].bind(window.console);
+                                } else {
+                                    API[prop] = console.log.bind(window.console);
                                 }
-                            },
-                            log: function () {},
-                            error: function () {},
-                            warn: function () {},
-                            debug: function () {}
+                            });
+                        }
 
-                        };
-                        return API;
-                    }(jQuery, window));
-        }
+                    }
+                },
+                log: function () {},
+                error: function () {},
+                warn: function () {},
+                debug: function () {}
+
+            };
+            API.setMode($("body").data("site-mode") ? $("body").data("site-mode") : "live");
+            return API;
+        }(jQuery, window)
+    );
+}
