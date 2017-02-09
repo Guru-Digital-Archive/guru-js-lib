@@ -16,7 +16,7 @@ var options = {
             "expr": true,
             "immed": true,
             "noarg": true,
-            "quotmark": "double",
+            "quotmark": "single",
             "onevar": false,
             "smarttabs": true,
             "trailing": true,

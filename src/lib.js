@@ -1,17 +1,18 @@
 /* global dateFormat: true */
 /* global responsiveHelper: true */
 /* global debugHelper: true */
+/* global jQuery */
 /* exported dateFormat */
 /* exported responsiveHelper */
 /* exported debugHelper */
 var dateFormat;
-(function (dateFormat) {
-    "use strict";
+(function(dateFormat) {
+    'use strict';
     function convert(format, sourceRules, destRules) {
         if (sourceRules === destRules) {
             return format;
         }
-        var result = "";
+        var result = '';
         var index = 0;
         var destTokens = getTokens(destRules);
         var sourceMap = getTokenMap(getTokens(sourceRules));
@@ -30,10 +31,10 @@ var dateFormat;
     }
     dateFormat.convert = convert;
     function locateNextToken(rules, format, begin) {
-        var literal = "";
+        var literal = '';
         var index = begin;
         var sequence = getTokenSequence(getTokenMap(getTokens(rules)));
-        var filter = function (x) {
+        var filter = function(x) {
             return format.indexOf(x, index) === index;
         };
         while (index < format.length) {
@@ -59,7 +60,7 @@ var dateFormat;
         }
 
         return {
-            token: "",
+            token: '',
             literal: literal,
             nextBegin: index
         };
@@ -93,8 +94,8 @@ var dateFormat;
             rules.FractionalSecond3,
             rules.TimeZone,
             rules.UnixTimestamp
-        ].map(function (x) {
-            return x || "";
+        ].map(function(x) {
+            return x || '';
         });
     }
 
@@ -111,7 +112,7 @@ var dateFormat;
 
     function getTokenSequence(map) {
         var tokens = Object.keys(map);
-        tokens.sort(function (a, b) {
+        tokens.sort(function(a, b) {
             return b.length - a.length;
         });
         return tokens;
@@ -130,54 +131,54 @@ var dateFormat;
     }
 
     dateFormat.standard = {
-        DayOfMonthShort: "d",
-        DayOfMonthLong: "dd",
-        DayOfWeekShort: "ddd",
-        DayOfWeekLong: "dddd",
-        DayOfYearShort: "D",
-        DayOfYearLong: "DD",
-        MonthOfYearShort: "M",
-        MonthOfYearLong: "MM",
-        MonthNameShort: "MMM",
-        MonthNameLong: "MMMM",
-        YearShort: "yy",
-        YearLong: "yyyy",
-        AmPm: "tt",
-        Hour24Short: "H",
-        Hour24Long: "HH",
-        Hour12Short: "h",
-        Hour12Long: "hh",
-        MinuteShort: "m",
-        MinuteLong: "mm",
-        SecondShort: "s",
-        SecondLong: "ss",
-        FractionalSecond1: "f",
-        FractionalSecond2: "ff",
-        FractionalSecond3: "fff",
-        TimeZone: "Z",
-        UnixTimestamp: "X",
-        MakeLiteral: function (literal) {
-            var reserved = "dDMytHhmsfZX";
+        DayOfMonthShort: 'd',
+        DayOfMonthLong: 'dd',
+        DayOfWeekShort: 'ddd',
+        DayOfWeekLong: 'dddd',
+        DayOfYearShort: 'D',
+        DayOfYearLong: 'DD',
+        MonthOfYearShort: 'M',
+        MonthOfYearLong: 'MM',
+        MonthNameShort: 'MMM',
+        MonthNameLong: 'MMMM',
+        YearShort: 'yy',
+        YearLong: 'yyyy',
+        AmPm: 'tt',
+        Hour24Short: 'H',
+        Hour24Long: 'HH',
+        Hour12Short: 'h',
+        Hour12Long: 'hh',
+        MinuteShort: 'm',
+        MinuteLong: 'mm',
+        SecondShort: 's',
+        SecondLong: 'ss',
+        FractionalSecond1: 'f',
+        FractionalSecond2: 'ff',
+        FractionalSecond3: 'fff',
+        TimeZone: 'Z',
+        UnixTimestamp: 'X',
+        MakeLiteral: function(literal) {
+            var reserved = 'dDMytHhmsfZX';
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
-            var result = "";
+            var result = '';
             for (var i = 0; i < literal.length; i++) {
                 var c = literal.charAt(i);
                 if (reserved.contains(c)) {
-                    result += "\\";
+                    result += '\\';
                 }
                 result += c;
             }
             return result;
         },
-        ReadEscapedPart: function (format, startIndex) {
-            var result = "";
+        ReadEscapedPart: function(format, startIndex) {
+            var result = '';
             var index = startIndex;
             while (index < format.length) {
                 var c = format.charAt(index);
-                if (c === "\\") {
-                    result += index === format.length - 1 ? "\\" : format[++index];
+                if (c === '\\') {
+                    result += index === format.length - 1 ? '\\' : format[++index];
                     index++;
                     continue;
                 }
@@ -191,67 +192,67 @@ var dateFormat;
         }
     };
     dateFormat.dotNet = {
-        DayOfMonthShort: "d",
-        DayOfMonthLong: "dd",
-        DayOfWeekShort: "ddd",
-        DayOfWeekLong: "dddd",
+        DayOfMonthShort: 'd',
+        DayOfMonthLong: 'dd',
+        DayOfWeekShort: 'ddd',
+        DayOfWeekLong: 'dddd',
         DayOfYearShort: null,
         DayOfYearLong: null,
-        MonthOfYearShort: "M",
-        MonthOfYearLong: "MM",
-        MonthNameShort: "MMM",
-        MonthNameLong: "MMMM",
-        YearShort: "yy",
-        YearLong: "yyyy",
-        AmPm: "tt",
-        Hour24Short: "H",
-        Hour24Long: "HH",
-        Hour12Short: "h",
-        Hour12Long: "hh",
-        MinuteShort: "m",
-        MinuteLong: "mm",
-        SecondShort: "s",
-        SecondLong: "ss",
-        FractionalSecond1: "f",
-        FractionalSecond2: "ff",
-        FractionalSecond3: "fff",
-        TimeZone: "zzz",
+        MonthOfYearShort: 'M',
+        MonthOfYearLong: 'MM',
+        MonthNameShort: 'MMM',
+        MonthNameLong: 'MMMM',
+        YearShort: 'yy',
+        YearLong: 'yyyy',
+        AmPm: 'tt',
+        Hour24Short: 'H',
+        Hour24Long: 'HH',
+        Hour12Short: 'h',
+        Hour12Long: 'hh',
+        MinuteShort: 'm',
+        MinuteLong: 'mm',
+        SecondShort: 's',
+        SecondLong: 'ss',
+        FractionalSecond1: 'f',
+        FractionalSecond2: 'ff',
+        FractionalSecond3: 'fff',
+        TimeZone: 'zzz',
         UnixTimestamp: null,
-        MakeLiteral: function (literal) {
-            var reserved = "dfFghHKmMstyz'\"";
+        MakeLiteral: function(literal) {
+            var reserved = 'dfFghHKmMstyz\'"';
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
 
-            var result = "";
+            var result = '';
             for (var i = 0; i < literal.length; i++) {
                 var c = literal.charAt(i);
                 if (reserved.contains(c)) {
-                    result += "\\";
+                    result += '\\';
                 }
                 result += c;
             }
             return result;
         },
-        ReadEscapedPart: function (format, startIndex) {
-            var result = "";
+        ReadEscapedPart: function(format, startIndex) {
+            var result = '';
             var index = startIndex;
             while (index < format.length) {
                 var c = format.charAt(index);
-                if (c === "\\") {
-                    result += index === format.length - 1 ? "\\" : format[++index];
+                if (c === '\\') {
+                    result += index === format.length - 1 ? '\\' : format[++index];
                     index++;
                     continue;
                 }
 
-                if (c === "\"") {
+                if (c === '"') {
                     while (++index < format.length) {
                         var cc = format.charAt(index);
-                        if (cc === "\"") {
+                        if (cc === '"') {
                             break;
                         }
-                        if (cc === "\\") {
-                            result += index === format.length - 1 ? "\\" : format[++index];
+                        if (cc === '\\') {
+                            result += index === format.length - 1 ? '\\' : format[++index];
                         } else {
                             result += cc;
                         }
@@ -260,14 +261,14 @@ var dateFormat;
                     continue;
                 }
 
-                if (c === "\"") {
+                if (c === '"') {
                     while (++index < format.length) {
                         var cc1 = format.charAt(index);
-                        if (cc1 === "\"") {
+                        if (cc1 === '"') {
                             break;
                         }
-                        if (cc1 === "\\") {
-                            result += index === format.length - 1 ? "\\" : format[++index];
+                        if (cc1 === '\\') {
+                            result += index === format.length - 1 ? '\\' : format[++index];
                         } else {
                             result += cc1;
                         }
@@ -286,49 +287,49 @@ var dateFormat;
         }
     };
     dateFormat.momentJs = {
-        DayOfMonthShort: "D",
-        DayOfMonthLong: "DD",
-        DayOfWeekShort: "ddd",
-        DayOfWeekLong: "dddd",
-        DayOfYearShort: "DDD",
-        DayOfYearLong: "DDDD",
-        MonthOfYearShort: "M",
-        MonthOfYearLong: "MM",
-        MonthNameShort: "MMM",
-        MonthNameLong: "MMMM",
-        YearShort: "YY",
-        YearLong: "YYYY",
-        AmPm: "A",
-        Hour24Short: "H",
-        Hour24Long: "HH",
-        Hour12Short: "h",
-        Hour12Long: "hh",
-        MinuteShort: "m",
-        MinuteLong: "mm",
-        SecondShort: "s",
-        SecondLong: "ss",
-        FractionalSecond1: "S",
-        FractionalSecond2: "SS",
-        FractionalSecond3: "SSS",
-        TimeZone: "Z",
-        UnixTimestamp: "X",
-        MakeLiteral: function (literal) {
-            var reserved = "MoDdeEwWYgGAaHhmsSzZX";
-            literal = literal.replaceAll("[", "(").replaceAll("]", ")");
+        DayOfMonthShort: 'D',
+        DayOfMonthLong: 'DD',
+        DayOfWeekShort: 'ddd',
+        DayOfWeekLong: 'dddd',
+        DayOfYearShort: 'DDD',
+        DayOfYearLong: 'DDDD',
+        MonthOfYearShort: 'M',
+        MonthOfYearLong: 'MM',
+        MonthNameShort: 'MMM',
+        MonthNameLong: 'MMMM',
+        YearShort: 'YY',
+        YearLong: 'YYYY',
+        AmPm: 'A',
+        Hour24Short: 'H',
+        Hour24Long: 'HH',
+        Hour12Short: 'h',
+        Hour12Long: 'hh',
+        MinuteShort: 'm',
+        MinuteLong: 'mm',
+        SecondShort: 's',
+        SecondLong: 'ss',
+        FractionalSecond1: 'S',
+        FractionalSecond2: 'SS',
+        FractionalSecond3: 'SSS',
+        TimeZone: 'Z',
+        UnixTimestamp: 'X',
+        MakeLiteral: function(literal) {
+            var reserved = 'MoDdeEwWYgGAaHhmsSzZX';
+            literal = literal.replaceAll('[', '(').replaceAll(']', ')');
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
-            return "[" + literal + "]";
+            return '[' + literal + ']';
         },
-        ReadEscapedPart: function (format, startIndex) {
-            if (format.charAt(startIndex) !== "[") {
-                return {value: "", length: 0};
+        ReadEscapedPart: function(format, startIndex) {
+            if (format.charAt(startIndex) !== '[') {
+                return {value: '', length: 0};
             }
-            var result = "";
+            var result = '';
             var index = startIndex;
             while (index < format.length) {
                 var c = format.charAt(index);
-                if (c === "]") {
+                if (c === ']') {
                     break;
                 }
 
@@ -342,18 +343,18 @@ var dateFormat;
         }
     };
     dateFormat.datepicker = {
-        DayOfMonthShort: "d",
-        DayOfMonthLong: "dd",
-        DayOfWeekShort: "D",
-        DayOfWeekLong: "DD",
-        DayOfYearShort: "o",
-        DayOfYearLong: "oo",
-        MonthOfYearShort: "m",
-        MonthOfYearLong: "mm",
-        MonthNameShort: "M",
-        MonthNameLong: "MM",
-        YearShort: "y",
-        YearLong: "yy",
+        DayOfMonthShort: 'd',
+        DayOfMonthLong: 'dd',
+        DayOfWeekShort: 'D',
+        DayOfWeekLong: 'DD',
+        DayOfYearShort: 'o',
+        DayOfYearLong: 'oo',
+        MonthOfYearShort: 'm',
+        MonthOfYearLong: 'mm',
+        MonthNameShort: 'M',
+        MonthNameLong: 'MM',
+        YearShort: 'y',
+        YearLong: 'yy',
         AmPm: null,
         Hour24Short: null,
         Hour24Long: null,
@@ -367,28 +368,28 @@ var dateFormat;
         FractionalSecond2: null,
         FractionalSecond3: null,
         TimeZone: null,
-        UnixTimestamp: "@",
-        MakeLiteral: function (literal) {
-            var reserved = "dDomMy@'";
+        UnixTimestamp: '@',
+        MakeLiteral: function(literal) {
+            var reserved = 'dDomMy@\'';
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
-            return "\"" + literal.replaceAll("\"", "\"\"") + "\"";
+            return '"' + literal.replaceAll('"', '""') + '"';
         },
-        ReadEscapedPart: function (format, startIndex) {
-            if (format.charAt(startIndex) !== "'") {
-                return {value: "", length: 0};
+        ReadEscapedPart: function(format, startIndex) {
+            if (format.charAt(startIndex) !== '\'') {
+                return {value: '', length: 0};
             }
-            var result = "";
+            var result = '';
             var index = startIndex;
             while (++index < format.length) {
                 var c = format.charAt(index);
-                if (c === "'") {
+                if (c === '\'') {
                     index++;
                     if (index === format.length) {
                         break;
                     }
-                    if (format[index] === "'") {
+                    if (format[index] === '\'') {
                         result += c;
                     } else {
                         break;
@@ -417,41 +418,41 @@ var dateFormat;
         MonthNameLong: null,
         YearShort: null,
         YearLong: null,
-        AmPm: "TT",
-        Hour24Short: "H",
-        Hour24Long: "HH",
-        Hour12Short: "h",
-        Hour12Long: "hh",
-        MinuteShort: "m",
-        MinuteLong: "mm",
-        SecondShort: "s",
-        SecondLong: "ss",
+        AmPm: 'TT',
+        Hour24Short: 'H',
+        Hour24Long: 'HH',
+        Hour12Short: 'h',
+        Hour12Long: 'hh',
+        MinuteShort: 'm',
+        MinuteLong: 'mm',
+        SecondShort: 's',
+        SecondLong: 'ss',
         FractionalSecond1: null,
         FractionalSecond2: null,
-        FractionalSecond3: "l",
-        TimeZone: "Z",
+        FractionalSecond3: 'l',
+        TimeZone: 'Z',
         UnixTimestamp: null,
-        MakeLiteral: function (literal) {
-            var reserved = "HhmslctTzZ'";
+        MakeLiteral: function(literal) {
+            var reserved = 'HhmslctTzZ\'';
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
-            return "\"" + literal.replaceAll("\"", "\"") + "\"";
+            return '"' + literal.replaceAll('"', '"') + '"';
         },
-        ReadEscapedPart: function (format, startIndex) {
-            if (format.charAt(startIndex) !== "'") {
-                return {value: "", length: 0};
+        ReadEscapedPart: function(format, startIndex) {
+            if (format.charAt(startIndex) !== '\'') {
+                return {value: '', length: 0};
             }
-            var result = "";
+            var result = '';
             var index = startIndex;
             while (++index < format.length) {
                 var c = format.charAt(index);
-                if (c === "'") {
+                if (c === '\'') {
                     index++;
                     if (index === format.length) {
                         break;
                     }
-                    if (format.charAt(index) === "'") {
+                    if (format.charAt(index) === '\'') {
                         result += c;
                     } else {
                         break;
@@ -468,49 +469,49 @@ var dateFormat;
         }
     };
     dateFormat.php = {
-        DayOfMonthShort: "j",
-        DayOfMonthLong: "d",
-        DayOfWeekShort: "D",
-        DayOfWeekLong: "l",
-        DayOfYearShort: "z",
+        DayOfMonthShort: 'j',
+        DayOfMonthLong: 'd',
+        DayOfWeekShort: 'D',
+        DayOfWeekLong: 'l',
+        DayOfYearShort: 'z',
         DayOfYearLong: null,
-        MonthOfYearShort: "n",
-        MonthOfYearLong: "m",
-        MonthNameShort: "M",
-        MonthNameLong: "F",
-        YearShort: "y",
-        YearLong: "Y",
-        AmPm: "A",
-        Hour24Short: "G",
-        Hour24Long: "H",
-        Hour12Short: "g",
-        Hour12Long: "h",
-        MinuteShort: "i",
-        MinuteLong: "i",
-        SecondShort: "s",
-        SecondLong: "s",
+        MonthOfYearShort: 'n',
+        MonthOfYearLong: 'm',
+        MonthNameShort: 'M',
+        MonthNameLong: 'F',
+        YearShort: 'y',
+        YearLong: 'Y',
+        AmPm: 'A',
+        Hour24Short: 'G',
+        Hour24Long: 'H',
+        Hour12Short: 'g',
+        Hour12Long: 'h',
+        MinuteShort: 'i',
+        MinuteLong: 'i',
+        SecondShort: 's',
+        SecondLong: 's',
         FractionalSecond1: null,
         FractionalSecond2: null,
         FractionalSecond3: null,
-        TimeZone: "T",
-        UnixTimestamp: "U",
-        MakeLiteral: function (literal) {
-            var reserved = "jdDlznmMFyYAGHghisTU";
-            literal = literal.replaceAll("[", "(").replaceAll("]", ")");
+        TimeZone: 'T',
+        UnixTimestamp: 'U',
+        MakeLiteral: function(literal) {
+            var reserved = 'jdDlznmMFyYAGHghisTU';
+            literal = literal.replaceAll('[', '(').replaceAll(']', ')');
             if (indexOfAny(literal, reserved) < 0) {
                 return literal;
             }
-            return "[" + literal + "]";
+            return '[' + literal + ']';
         },
-        ReadEscapedPart: function (format, startIndex) {
-            if (format.charAt(startIndex) !== "[") {
-                return {value: "", length: 0};
+        ReadEscapedPart: function(format, startIndex) {
+            if (format.charAt(startIndex) !== '[') {
+                return {value: '', length: 0};
             }
-            var result = "";
+            var result = '';
             var index = startIndex;
             while (index < format.length) {
                 var c = format.charAt(index);
-                if (c === "]") {
+                if (c === ']') {
                     break;
                 }
 
@@ -525,20 +526,20 @@ var dateFormat;
     };
 })(dateFormat || (dateFormat = {}));
 if (!String.prototype.replaceAll) {
-    String.prototype.replaceAll = function (pattern, replacement) {
-        "use strict";
+    String.prototype.replaceAll = function(pattern, replacement) {
+        'use strict';
         return this.split(pattern).join(replacement);
     };
 }
 if (!String.prototype.contains) {
-    String.prototype.contains = function (needle) {
-        "use strict";
+    String.prototype.contains = function(needle) {
+        'use strict';
         return this.indexOf(needle) >= 0;
     };
 }
 if (!Array.prototype.first) {
-    Array.prototype.first = function (callback) {
-        "use strict";
+    Array.prototype.first = function(callback) {
+        'use strict';
         if (!callback) {
             return this.length ? this[0] : null;
         }
@@ -554,12 +555,12 @@ if (!Array.prototype.first) {
 }
 
 if (!Array.prototype.forEach) {
-    Array.prototype.forEach = function (callback, thisArg) {
-        "use strict";
+    Array.prototype.forEach = function(callback, thisArg) {
+        'use strict';
 
         var T, k;
         if (this === null) {
-            throw new TypeError("this is null or not defined");
+            throw new TypeError('this is null or not defined');
         }
 
 // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
@@ -569,8 +570,8 @@ if (!Array.prototype.forEach) {
         var len = O.length >>> 0;
         // 4. If IsCallable(callback) is false, throw a TypeError exception.
         // See: http://es5.github.com/#x9.11
-        if (typeof callback !== "function") {
-            throw new TypeError(callback + " is not a function");
+        if (typeof callback !== 'function') {
+            throw new TypeError(callback + ' is not a function');
         }
 
 // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
@@ -604,160 +605,160 @@ if (!Array.prototype.forEach) {
     };
 }
 
-(function ($) {
-    "use strict";
+(function($) {
+    'use strict';
     if (!Array.prototype.map) {
-        Array.prototype.map = function (callback) {
+        Array.prototype.map = function(callback) {
             return $.map(this, callback);
         };
     }
     if (!Array.prototype.filter) {
-        Array.prototype.filter = function (callback) {
+        Array.prototype.filter = function(callback) {
             return $.grep(this, callback);
         };
     }
     if (!Array.prototype.inArray) {
-        Array.prototype.inArray = function (needle) {
+        Array.prototype.inArray = function(needle) {
             return $.inArray(needle, this) !== -1;
         };
     }
 })(jQuery);
 if (!Array.prototype.select) {
-    Array.prototype.select = function (expr) {
-        "use strict";
+    Array.prototype.select = function(expr) {
+        'use strict';
         return this.map(expr);
     };
 }
 if (!Array.prototype.where) {
-    Array.prototype.where = function (filter) {
-        "use strict";
+    Array.prototype.where = function(filter) {
+        'use strict';
 
         var collection = this, result = [];
         switch (typeof filter) {
 
-            case "function":
-                result = collection.filter(filter);
-                break;
-            case "object":
-                var compareFunc = function (item) {
-                    return item[property] === filter[property];
-                };
-                for (var property in filter) {
-                    if (!filter.hasOwnProperty(property)) {
-                        continue; // ignore inherited properties
-                    }
-                    collection = collection.filter(compareFunc);
+        case 'function':
+            result = collection.filter(filter);
+            break;
+        case 'object':
+            var compareFunc = function(item) {
+                return item[property] === filter[property];
+            };
+            for (var property in filter) {
+                if (!filter.hasOwnProperty(property)) {
+                    continue; // ignore inherited properties
                 }
-                result = collection.slice(0); // copy the array (in case of empty object filter)
-                break;
-            default:
-                throw new TypeError("func must be either a function or an object of properties and values to filter by");
+                collection = collection.filter(compareFunc);
+            }
+            result = collection.slice(0); // copy the array (in case of empty object filter)
+            break;
+        default:
+            throw new TypeError('func must be either a function or an object of properties and values to filter by');
         }
         return result;
     };
 }
 
 if (!Array.prototype.firstOrDefault) {
-    Array.prototype.firstOrDefault = function (callback, valueIfNone) {
-        "use strict";
-        valueIfNone = typeof valueIfNone === "undefined" ? null : valueIfNone;
+    Array.prototype.firstOrDefault = function(callback, valueIfNone) {
+        'use strict';
+        valueIfNone = typeof valueIfNone === 'undefined' ? null : valueIfNone;
         return this.where(callback)[0] || valueIfNone;
     };
 }
 
-if (typeof iframeform === "undefined") {
-    var iframeform = function (url) {
-        "use strict";
+if (typeof iframeform === 'undefined') {
+    var iframeform = function(url) {
+        'use strict';
         var object = this;
         object.time = new Date().getTime();
-        object.form = $("<form action='" + url + "' target='iframe" + object.time + "' method='post' style='display:none;' id='form" + object.time + "'></form>");
-        object.frame = $("<iframe class='formframe' data-time='" + object.time + "' name='iframe" + object.time + "'></iframe>");
-        object.addParameter = function (parameter, value) {
-            $("<input type='hidden' />")
-                    .attr("name", parameter)
-                    .attr("value", value)
-                    .appendTo(object.form);
+        object.form = jQuery('<form action=\'' + url + '\' target=\'iframe' + object.time + '\' method=\'post\' style=\'display:none;\' id=\'form' + object.time + '\'></form>');
+        object.frame = jQuery('<iframe class=\'formframe\' data-time=\'' + object.time + '\' name=\'iframe' + object.time + '\'></iframe>');
+        object.addParameter = function(parameter, value) {
+            jQuery('<input type=\'hidden\' />')
+              .attr('name', parameter)
+              .attr('value', value)
+              .appendTo(object.form);
         };
-        window.addEventListener("message", function (e) {
+        window.addEventListener('message', function(e) {
             var action = e.data.action ? e.data.action : false,
-                    noscroll = e.data.noscroll ? e.data.noscroll : false;
-            object.frame.data("noscroll", noscroll);
-            if (action === "setHeight" && e.data.height && object.frame.length) {
-                object.frame.data("height", e.data.height);
-                object.frame.trigger("iframeblock:loaded");
-            } else if (action === "setLoading" && object.frame.length) {
-                object.frame.data("loaded", false);
-                object.frame.data("height", false);
-                object.frame.trigger("iframeblock:unloaded");
-            } else if (action === "setLoaded" && object.frame.length) {
-                object.frame.data("loaded", true);
-                object.frame.trigger("iframeblock:loaded");
+                noscroll = e.data.noscroll ? e.data.noscroll : false;
+            object.frame.data('noscroll', noscroll);
+            if (action === 'setHeight' && e.data.height && object.frame.length) {
+                object.frame.data('height', e.data.height);
+                object.frame.trigger('iframeblock:loaded');
+            } else if (action === 'setLoading' && object.frame.length) {
+                object.frame.data('loaded', false);
+                object.frame.data('height', false);
+                object.frame.trigger('iframeblock:unloaded');
+            } else if (action === 'setLoaded' && object.frame.length) {
+                object.frame.data('loaded', true);
+                object.frame.trigger('iframeblock:loaded');
             }
         });
-        object.send = function () {
-            $(".row.form-wrap").append(object.frame);
-            $(".row.form-wrap").append(object.form);
-            object.frame.on("iframeblock:loaded", function () {
-                var height = object.frame.data("height"), loaded = object.frame.data("loaded");
+        object.send = function() {
+            jQuery('.row.form-wrap').append(object.frame);
+            jQuery('.row.form-wrap').append(object.form);
+            object.frame.on('iframeblock:loaded', function() {
+                var height = object.frame.data('height'), loaded = object.frame.data('loaded');
                 if (height && loaded) {
-                    if (!object.frame.data("noscroll")) {
+                    if (!object.frame.data('noscroll')) {
                         window.scrollTo(0, 0);
                     }
                     object.frame.height(height);
-                    object.frame.parent().removeClass("iframe-loading");
+                    object.frame.parent().removeClass('iframe-loading');
                 }
             });
-            object.frame.on("iframeblock:unloaded", function () {
-                object.frame.css({height: "auto"});
-                object.frame.parent().addClass("iframe-loading");
+            object.frame.on('iframeblock:unloaded', function() {
+                object.frame.css({height: 'auto'});
+                object.frame.parent().addClass('iframe-loading');
             });
             object.form.submit();
-            object.frame.load(function () {
+            object.frame.load(function() {
                 //If the frame hasnt loaded in 300ms, manually set the height
-                setTimeout(function () {
-                    if (!object.frame.data("loaded")) {
-                        object.frame.data("height", 860);
-                        object.frame.data("loaded", true);
-                        object.frame.trigger("iframeblock:loaded");
+                setTimeout(function() {
+                    if (!object.frame.data('loaded')) {
+                        object.frame.data('height', 860);
+                        object.frame.data('loaded', true);
+                        object.frame.trigger('iframeblock:loaded');
                     }
                 }, 300);
             });
         };
     };
 }
-if (typeof responsiveHelper === "undefined") {
+if (typeof responsiveHelper === 'undefined') {
     /**
      * Utilty class to assist with responsive design
      *
      * @type responsiveHelper
      */
     var responsiveHelper = (
-        /**
-         *
-         * @param {jQuery} $ Current jQuery Instance
-         * @param {window} window
-         * @returns {responsiveHelper}
-         */
-        function ($, window) {
-            "use strict";
+      /**
+       *
+       * @param {jQuery} $ Current jQuery Instance
+       * @param {window} window
+       * @returns {responsiveHelper}
+       */
+        function($, window) {
+            'use strict';
             var
-                    /**
-                     * Ensures we only bind resize envents once
-                     * @type Boolean
-                     */
-                    isSetup = false,
-                    /**
-                     * Timer ID for resize envent
-                     * @type {Number}
-                     */
-                    resizeTimer = null,
-                    /**
-                     * Delay in milliseconds to fire events after the screen has resized<br/>
-                     * To high and there will be a noticible delay.<br/>
-                     * To low and resizing browser may become slow
-                     * @type Number
-                     */
-                    resizeTimeout = 90;
+              /**
+               * Ensures we only bind resize envents once
+               * @type Boolean
+               */
+                isSetup = false,
+              /**
+               * Timer ID for resize envent
+               * @type {Number}
+               */
+                resizeTimer = null,
+              /**
+               * Delay in milliseconds to fire events after the screen has resized<br/>
+               * To high and there will be a noticible delay.<br/>
+               * To low and resizing browser may become slow
+               * @type Number
+               */
+                resizeTimeout = 90;
 
             /**
              * Returns the current height and width of the viewport
@@ -765,9 +766,9 @@ if (typeof responsiveHelper === "undefined") {
              * @returns {responsiveHelper.viewport.result} The current height and width of the viewport
              */
             function viewport() {
-                var element = window, property = "inner";
-                if (!("innerWidth" in element)) {
-                    property = "client";
+                var element = window, property = 'inner';
+                if (!('innerWidth' in element)) {
+                    property = 'client';
                     element = document.documentElement || document.body;
                 }
 
@@ -781,12 +782,12 @@ if (typeof responsiveHelper === "undefined") {
                      * The current width of the viewport in pixels
                      * @type {Number}
                      */
-                    width: parseInt(element[ property + "Width" ]),
+                    width: parseInt(element[ property + 'Width' ]),
                     /**
                      * The current height of the viewport in pixels
                      * @type {Number}
                      */
-                    height: parseInt(element[ property + "Height" ])
+                    height: parseInt(element[ property + 'Height' ])
                 };
                 return result;
             }
@@ -855,12 +856,12 @@ if (typeof responsiveHelper === "undefined") {
             function init() {
                 if (!isSetup) {
                     $(window).resize(
-                            function () {
-                                if (resizeTimer) {
-                                    clearTimeout(resizeTimer);
-                                }
-                                resizeTimer = setTimeout(API.reflow, resizeTimeout);
-                            }
+                      function() {
+                          if (resizeTimer) {
+                              clearTimeout(resizeTimer);
+                          }
+                          resizeTimer = setTimeout(API.reflow, resizeTimeout);
+                      }
                     );
                     isSetup = true;
                 }
@@ -879,14 +880,14 @@ if (typeof responsiveHelper === "undefined") {
                 var size = API.viewport(), widthChanged = (size.width !== API.width), heightChanged = (size.height !== API.height);
                 if (widthChanged) {
                     API.width = size.width;
-                    $(API).trigger("responsive.width", API);
+                    $(API).trigger('responsive.width', API);
                 }
                 if (heightChanged) {
                     API.height = size.height;
-                    $(API).trigger("responsive.height", API);
+                    $(API).trigger('responsive.height', API);
                 }
                 if (widthChanged || heightChanged) {
-                    $(API).trigger("responsive.change", API);
+                    $(API).trigger('responsive.change', API);
                 }
             }
             /**
@@ -895,38 +896,38 @@ if (typeof responsiveHelper === "undefined") {
              * @returns {jQuery}
              */
             function showDebugBox() {
-                var debugBox = $(".responsive-helper-debug"), updateDebugBox = function (e, responsiveHelper) {
-                    var text = "Unknown (currentSize=" + responsiveHelper.currentSize() + ", width=" + responsiveHelper.width + ")";
-                    if (responsiveHelper.isLG()) {
-                        text = "isLG";
-                    } else if (responsiveHelper.isMD()) {
-                        text = "isMD";
-                    } else if (responsiveHelper.isSM()) {
-                        text = "isSM";
-                    } else if (responsiveHelper.isXS()) {
-                        text = "isXS";
-                    } else if (responsiveHelper.isXXS()) {
-                        text = "isXXS";
-                    }
-                    debugBox.html(text);
-                };
+                var debugBox = $('.responsive-helper-debug'), updateDebugBox = function(e, responsiveHelper) {
+                        var text = 'Unknown (currentSize=' + responsiveHelper.currentSize() + ', width=' + responsiveHelper.width + ')';
+                        if (responsiveHelper.isLG()) {
+                            text = 'isLG';
+                        } else if (responsiveHelper.isMD()) {
+                            text = 'isMD';
+                        } else if (responsiveHelper.isSM()) {
+                            text = 'isSM';
+                        } else if (responsiveHelper.isXS()) {
+                            text = 'isXS';
+                        } else if (responsiveHelper.isXXS()) {
+                            text = 'isXXS';
+                        }
+                        debugBox.html(text);
+                    };
                 if (!debugBox.length) {
-                    debugBox = $("<div class='responsive-helper-debug'></div>");
+                    debugBox = $('<div class=\'responsive-helper-debug\'></div>');
                     debugBox.css({
-                        position: "fixed",
-                        "z-index": 99999,
+                        position: 'fixed',
+                        'z-index': 99999,
                         top: 0,
                         left: 0,
-                        background: "#fff",
-                        display: "inline-block",
-                        padding: "5px",
-                        "-webkit-box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)",
-                        "box-shadow": "-1px -1px 14px 3px rgba(50, 50, 50, 0.75)"
+                        background: '#fff',
+                        display: 'inline-block',
+                        padding: '5px',
+                        '-webkit-box-shadow': '-1px -1px 14px 3px rgba(50, 50, 50, 0.75)',
+                        'box-shadow': '-1px -1px 14px 3px rgba(50, 50, 50, 0.75)'
                     });
                 }
-                $(API).on("responsive.width", updateDebugBox);
-                $(function () {
-                    debugBox.appendTo("body");
+                $(API).on('responsive.width', updateDebugBox);
+                $(function() {
+                    debugBox.appendTo('body');
                     updateDebugBox({}, API);
                 });
                 return debugBox;
@@ -960,8 +961,24 @@ if (typeof responsiveHelper === "undefined") {
                  * (Default 1200)
                  * @type {Number}
                  */
-                lg: 1200
+                lg: 1200,
+                /**
+                 * Width in pixels at which the mobile menu becomes visible<br/>
+                 * (Default 768)
+                 * @type {Number}
+                 */
+                mobilemenu: 768
             };
+
+            if (window.getComputedStyle && window.getComputedStyle(document.body, '::after')) {
+                var style = window.getComputedStyle(document.body, '::after');
+                var content = style.content.replace(/^['"]+|\s+|\\|(;\s?})+|['"]$/g, '').replace(/px/g, '').replace(/"([0-9]+)"/g, '$1');
+                var cssSizes = JSON.parse(content);
+                if (cssSizes && cssSizes.sm) {
+                    sizes = cssSizes;
+                }
+            }
+
             /**
              * @name responsiveHelper
              * @namespace responsiveHelper
@@ -999,23 +1016,23 @@ if (typeof responsiveHelper === "undefined") {
             API.reflow();
             return API;
         }(jQuery, window)
-    );
+        );
 }
 
 
-if (typeof debugHelper === "undefined") {
+if (typeof debugHelper === 'undefined') {
     /**
      * Utilty class to assist debugging and testing
      *
      * @type debugHelper
      */
     var debugHelper = (
-        /**
-         *
-         * @returns {debugHelper}
-         */
-        function () {
-            "use strict";
+      /**
+       *
+       * @returns {debugHelper}
+       */
+        function($, window) {
+            'use strict';
             var mode = {
                 /**
                  * Is the site in Dev mode<br/>
@@ -1046,24 +1063,24 @@ if (typeof debugHelper === "undefined") {
                  * @type debugHelper.mode
                  */
                 mode: mode,
-                isDev: function () {
+                isDev: function() {
                     return API.mode.dev;
                 },
-                isTest: function () {
+                isTest: function() {
                     return API.mode.test;
                 },
-                isLive: function () {
+                isLive: function() {
                     return API.mode.live;
                 },
-                setMode: function (mode) {
+                setMode: function(mode) {
                     API.mode.dev = /.*dev.*/i.test(mode);
                     API.mode.test = /.*test.*/i.test(mode);
                     API.mode.live = /.*live.*/i.test(mode);
                     if (!API.mode.live) {
                         if (console && console.log) {
                             this.log = console.log.bind(window.console);
-                            ["error", "warn", "debug"].forEach(function (prop) {
-                                if (typeof console[prop] === "function") {
+                            ['error', 'warn', 'debug'].forEach(function(prop) {
+                                if (typeof console[prop] === 'function') {
                                     API[prop] = console[prop].bind(window.console);
                                 } else {
                                     API[prop] = console.log.bind(window.console);
@@ -1073,14 +1090,16 @@ if (typeof debugHelper === "undefined") {
 
                     }
                 },
-                log: function () {},
-                error: function () {},
-                warn: function () {},
-                debug: function () {}
+                log: function() {},
+                error: function() {},
+                warn: function() {},
+                debug: function() {}
 
             };
-            API.setMode($("body").data("site-mode") ? $("body").data("site-mode") : "live");
+            API.setMode($('body').data('site-mode') ? $('body').data('site-mode') : 'live');
             return API;
         }(jQuery, window)
-    );
+        );
 }
+
+// end
