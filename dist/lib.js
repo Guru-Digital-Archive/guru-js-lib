@@ -854,6 +854,14 @@ if (typeof responsiveHelper === 'undefined') {
                 return API.width <= API.sizes.xs - 1;
             }
             /**
+             * Is the screen currently at or below the mobile menu break point<br/><br/>
+             * <strong>Requires</strong> responsiveHelper.init() to be called to enable live updating.
+             * @returns {Boolean} True if responsiveHelper.width is less or equal to responsiveHelper.sizes.mobilemenu
+             */
+            function isMobileMenu() {
+                return API.width <= API.sizes.mobilemenu;
+            }
+            /**
              * Enables live updating on screen resize
              * @returns {undefined}
              */
@@ -1014,7 +1022,8 @@ if (typeof responsiveHelper === 'undefined') {
                 isXS: isXS,
                 isSM: isSM,
                 isMD: isMD,
-                isXXS: isXXS
+                isXXS: isXXS,
+                isMobileMenu: isMobileMenu
             };
 
             API.reflow();
