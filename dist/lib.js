@@ -985,9 +985,11 @@ if (typeof responsiveHelper === 'undefined') {
             if (window.getComputedStyle && window.getComputedStyle(document.body, '::after')) {
                 var style = window.getComputedStyle(document.body, '::after');
                 var content = style.content.replace(/^['"]+|\s+|\\|(;\s?})+|['"]$/g, '').replace(/px/g, '').replace(/"([0-9]+)"/g, '$1');
-                var cssSizes = JSON.parse(content);
-                if (cssSizes && cssSizes.sm) {
-                    sizes = cssSizes;
+                if (content){
+                    var cssSizes = JSON.parse(content);
+                    if (cssSizes && cssSizes.sm) {
+                        sizes = cssSizes;
+                    }
                 }
             }
 
